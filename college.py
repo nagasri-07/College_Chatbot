@@ -22,7 +22,7 @@ genai.configure(api_key=API_KEY)
 model=genai.GenerativeModel('gemini-1.5-flash')
 def find_closest_question(user_query,vectorizer,question_vectors,df):
   query_vector=vectorizer.transform({user_query.lower()})
-  similarities=cosine_similarity(query_vector,question_vectors.flatten())
+  similarities=cosine_similarity(query_vector,question_vectors).flatten()
   best_match_index=similarities.argmax()
   best_match_score=similarities[best_match_index]
   if best_match_score>0.3:
@@ -42,11 +42,13 @@ if prompt := st.chat_input("Say something..."):
     closest_answer=find_closest_question(prompt,vectorizer,question_vectors,df)
     if closest_answer:
       st.session_state.messages.append({"role": "assistant", "content": closest_answer})
-      with st,chat_message("assistant"):
+      with st.chat_message("assistant"):
         st.markdown(closest_answer)
     else:
       try:
         response=model.generate_content(prompt)
         st.session_state.messages.append({"role":"assistant", "content":response.text})
+        with st.chat_message("assistant"):
+                st.markdown(response.text)
       except Exception as e:
         st.error(f"Sorry, I couldn't generate a response. Error:{e}")
