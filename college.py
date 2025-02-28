@@ -15,7 +15,7 @@ except Exception as e:
 df=df.fillna("")
 df['Question']=df['Question'].str.lower()
 df['Answer']=df['Answer'].str.lower()
-vectorizer=TfidVectorizer()
+vectorizer=TfidfVectorizer()
 question_vectors=vectorizer.fit_transform(df['Question'])
 API_KEY="AIzaSyDuiPg8TvjH7FinQLiz599b4kId4LkbPCQ"
 genai.configure(api_key=API_KEY)
